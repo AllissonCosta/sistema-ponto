@@ -1,6 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 
 import { useEffect, useState } from "react";
 
@@ -41,7 +42,10 @@ export default function Painel() {
   };
 
   useEffect(() => {
-    buscarDados();
+    const inicializar = async () => {
+      await buscarDados();
+    };
+    inicializar();
   }, []);
 // Extrai o ID do Google Drive e converte para link de miniatura
   const obterUrlMiniatura = (url: string) => {
