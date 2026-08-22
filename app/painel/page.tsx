@@ -223,7 +223,7 @@ export default function Painel() {
       )}
     </button>
 
-    <UserButton afterSignOutUrl="/" />
+    <UserButton />
   </div>
 </div>
 
@@ -356,9 +356,12 @@ export default function Painel() {
       title="Ver foto do comprovante"
     >
       {/* Usando a função obterUrlMiniatura aqui no src */}
-      <img 
+      <Image 
         src={obterUrlMiniatura(registro.fotoUrl)} 
         alt={`Foto de ${registro.tecnico}`} 
+        width={40}
+        height={40}
+        unoptimized
         className="h-full w-full object-cover"
       />
     </a>
