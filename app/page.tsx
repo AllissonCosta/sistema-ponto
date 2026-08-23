@@ -1,9 +1,8 @@
-'use client'; // Necessário se estiver usando Next.js App Router
+'use client'; 
 
 import React, { useState, useRef, useEffect } from 'react';
-import Link from 'next/link'; // <-- Importação do Link adicionada
+import Link from 'next/link';
 
-// Tipagem dos dados
 interface PontoData {
   tecnico: string;
   local: string;
@@ -26,13 +25,12 @@ export default function RegistroPonto() {
   });
 
   const [enviando, setEnviando] = useState(false);
+  // NOVO ESTADO: Armazena o link do WhatsApp após o envio para exibir a tela de sucesso
   const [linkWhatsappPronto, setLinkWhatsappPronto] = useState<string | null>(null);
 
-  // Referências para os inputs de arquivo ocultos
   const inputCameraRef = useRef<HTMLInputElement>(null);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  // Função auxiliar para pegar a hora atual no formato "HH:mm"
   const obterHoraAtual = () => {
     const agora = new Date();
     const horas = String(agora.getHours()).padStart(2, '0');
@@ -40,27 +38,22 @@ export default function RegistroPonto() {
     return `${horas}:${minutos}`;
   };
 
-  // Preenche o horário do sistema assim que o componente é montado
   useEffect(() => {
     setFormData((prev) => ({ ...prev, horarioObservado: obterHoraAtual() }));
   }, []);
 
-  // Atualiza campos de texto e seleção
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Função inteligente para formatar a hora ao perder o foco (caso o navegador permita ajuste manual)
   const handleBlurHora = (e: React.FocusEvent<HTMLInputElement>) => {
     let valor = e.target.value.trim();
     if (!valor) return;
 
-    // Se o usuário digitou apenas números (ex: "8" ou "08"), converte para "08:00"
     if (/^\d{1,2}$/.test(valor)) {
       valor = `${valor.padStart(2, '0')}:00`;
     } 
-    // Se digitou sem dois pontos (ex: "0830"), converte para "08:30"
     else if (/^\d{3,4}$/.test(valor)) {
       valor = valor.padStart(4, '0');
       valor = `${valor.slice(0, 2)}:${valor.slice(2, 4)}`;
@@ -69,19 +62,17 @@ export default function RegistroPonto() {
     setFormData((prev) => ({ ...prev, horarioObservado: valor }));
   };
 
-  // Lida com a escolha/captura da foto
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData((prev) => ({
         ...prev,
         foto: file,
-        fotoPreview: URL.createObjectURL(file), // Cria a visualização da foto na tela
+        fotoPreview: URL.createObjectURL(file),
       }));
     }
   };
 
-  // Converte a imagem para Base64 para poder enviar para o Google Sheets
   const converterParaBase64 = (arquivo: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -91,9 +82,7 @@ export default function RegistroPonto() {
     });
   };
 
-  // Função principal ao clicar em ENVIAR
   const handleEnviar = async () => {
-    // 1. Validação
     if (!formData.tecnico || !formData.local || !formData.tipoPonto || !formData.foto || !formData.horarioObservado) {
       alert("Por favor, preencha todos os campos");
       return;
@@ -102,10 +91,8 @@ export default function RegistroPonto() {
     setEnviando(true);
 
     try {
-      // 2. Converte a foto
       const fotoBase64 = await converterParaBase64(formData.foto);
 
-      // 3. Monta os dados para o Google Sheets
       const dadosEnvio = {
         tecnico: formData.tecnico,
         local: formData.local,
@@ -114,16 +101,13 @@ export default function RegistroPonto() {
         fotoBase64: fotoBase64,
       };
 
-      // 4. Envia para o Google Sheets
       const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwJt1wWDqr6CCknFK7YzPH01vwN8hzsynqZHIWqUBKDALcFI-C6exWC_01RkuCQjCZ8/exec"; 
       
-      // Enviamos em background
       fetch(URL_APPS_SCRIPT, {
         method: 'POST',
         body: JSON.stringify(dadosEnvio),
       }).catch(err => console.error("Erro na planilha:", err));
 
-      // 5. Monta a mensagem do WhatsApp
       const frasesAcao: Record<string, string> = {
         'Chegada': 'começou o expediente',
         'Pausa': 'fez pausa para almoço',
@@ -132,16 +116,16 @@ export default function RegistroPonto() {
       };
 
       const acaoTexto = frasesAcao[formData.tipoPonto];
-      // Atualize este link com o seu domínio real na Vercel quando necessário
       const linkGestao = "sistema-ponto-weld.vercel.app/painel";
       const mensagem = `o ${formData.tecnico.toLowerCase()} ${acaoTexto}: ${linkGestao}`;
 
-      const linkWhatsApp = `whatsapp://send?text=${encodeURIComponent(mensagem)}`;
+      // Monta o link Universal oficial do WhatsApp
+      const linkWhatsApp = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
 
-      // Abre o WhatsApp
-      window.open(linkWhatsApp);
+      // Salva o link no estado para acionar a tela de Sucesso
+      setLinkWhatsappPronto(linkWhatsApp);
 
-      // 6. Limpa o formulário após o envio e restaura a hora atual do sistema
+      // Limpa os dados do formulário silenciosamente no fundo
       setFormData({
         tecnico: '',
         local: '',
@@ -150,7 +134,6 @@ export default function RegistroPonto() {
         foto: null,
         fotoPreview: null,
       });
-      alert("Ponto registrado com sucesso!");
 
     } catch (erro) {
       console.error("Erro ao enviar:", erro);
@@ -199,6 +182,7 @@ export default function RegistroPonto() {
     );
   }
 
+  // TELA PADRÃO (O FORMULÁRIO)
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-20 font-sans">
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg space-y-6">
@@ -325,7 +309,7 @@ export default function RegistroPonto() {
           {enviando ? 'Enviando...' : 'Registrar Ponto'}
         </button>
 
-        {/* 6. ACESSO AO PAINEL (NOVO BOTÃO ADICIONADO AQUI) */}
+        {/* 6. ACESSO AO PAINEL */}
         <div className="pt-4 border-t border-gray-100 text-center mt-6">
           <Link 
             href="/painel"
@@ -339,7 +323,6 @@ export default function RegistroPonto() {
         </div>
 
       </div>
-      
     </div>
   );
 }
