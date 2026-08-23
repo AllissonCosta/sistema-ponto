@@ -35,7 +35,7 @@ export default function Painel() {
       setRegistros(data.reverse()); // Inverte para mostrar os mais recentes primeiro
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
-      alert("Erro ao carregar os dados. Verifique o console.");
+      alert("Erro ao carregar os dados. Por favor, tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -75,6 +75,7 @@ export default function Painel() {
       formatarData(reg.data),
       formatarHoraTecnico(reg.horarioObservado),
       reg.tecnico,
+      reg.local,
     ]);
 
     // 3. Junta tudo separando por vírgula e quebra de linha

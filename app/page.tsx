@@ -7,7 +7,7 @@ interface PontoData {
   tecnico: string;
   local: string;
   horarioObservado: string;
-  tipoPonto: 'Chegada' | 'Pausa' | 'Retorno' | 'Fim' | '';
+  tipoPonto: 'Chegada' | 'Pausa' | 'Retorno' | 'Fim Expediente' | '';
   foto: File | null;
   fotoPreview: string | null;
 }
@@ -112,7 +112,7 @@ export default function RegistroPonto() {
         'Chegada': 'começou o expediente',
         'Pausa': 'fez pausa para almoço',
         'Retorno': 'retornou do almoço',
-        'Fim': 'finalizou o expediente'
+        'Fim Expediente': 'finalizou o expediente'
       };
 
       const acaoTexto = frasesAcao[formData.tipoPonto];
@@ -155,7 +155,7 @@ export default function RegistroPonto() {
           </div>
           <h2 className="text-3xl font-bold text-gray-800">Ponto Salvo!</h2>
           <p className="text-gray-600">
-            Seu registro foi enviado para a planilha com sucesso.
+            Seu registro foi enviado com sucesso.
           </p>
           
           {/* BOTÃO DO WHATSAPP (Como é um link real, o iOS nunca bloqueia) */}
@@ -221,7 +221,7 @@ export default function RegistroPonto() {
             />
           </div>
           <div className="flex flex-col">
-            <label className="font-semibold text-gray-700 mb-1">Hora Observada:</label>
+            <label className="font-semibold text-gray-700 mb-1">Horário de chegada:</label>
             <input 
               type="time" 
               name="horarioObservado" 
@@ -275,7 +275,7 @@ export default function RegistroPonto() {
         <div className="flex flex-col space-y-2 border-t pt-4">
           <label className="font-semibold text-gray-700">Ação do Ponto:</label>
           <div className="grid grid-cols-2 gap-2">
-            {['Chegada', 'Pausa', 'Retorno', 'Fim'].map((tipo) => (
+            {['Chegada', 'Pausa', 'Retorno', 'Fim Expediente'].map((tipo) => (
               <label 
                 key={tipo} 
                 className={`flex items-center justify-center p-3 rounded-lg border-2 cursor-pointer font-medium transition-colors ${
