@@ -1,6 +1,7 @@
 'use client'; // Necessário se estiver usando Next.js App Router
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link'; // <-- Importação do Link adicionada
 
 // Tipagem dos dados
 interface PontoData {
@@ -130,7 +131,8 @@ export default function RegistroPonto() {
       };
 
       const acaoTexto = frasesAcao[formData.tipoPonto];
-      const linkGestao = "www.seusite.com.br/painel";
+      // Atualize este link com o seu domínio real na Vercel quando necessário
+      const linkGestao = "sistema-ponto-weld.vercel.app/painel";
       const mensagem = `o ${formData.tecnico.toLowerCase()} ${acaoTexto}: ${linkGestao}`;
 
       const linkWhatsApp = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
@@ -219,14 +221,14 @@ export default function RegistroPonto() {
             <button 
               type="button" 
               onClick={() => inputCameraRef.current?.click()}
-              className="flex-1 bg-blue-600 text-white font-medium p-3 rounded-lg shadow-sm active:bg-blue-700"
+              className="flex-1 bg-blue-600 text-white font-medium p-3 rounded-lg shadow-sm active:bg-blue-700 transition-colors"
             >
               📷 Tirar Foto
             </button>
             <button 
               type="button" 
               onClick={() => inputFileRef.current?.click()}
-              className="flex-1 bg-gray-200 text-gray-800 font-medium p-3 rounded-lg shadow-sm active:bg-gray-300"
+              className="flex-1 bg-gray-200 text-gray-800 font-medium p-3 rounded-lg shadow-sm active:bg-gray-300 transition-colors"
             >
               📂 Selecionar
             </button>
@@ -237,7 +239,7 @@ export default function RegistroPonto() {
               <img src={formData.fotoPreview} alt="Preview" className="w-full h-48 object-cover rounded-lg border" />
               <button 
                 onClick={() => setFormData(prev => ({ ...prev, foto: null, fotoPreview: null }))}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-8 h-8 flex items-center justify-center font-bold"
+                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-8 h-8 flex items-center justify-center font-bold shadow-md hover:bg-red-600"
               >
                 X
               </button>
@@ -283,7 +285,21 @@ export default function RegistroPonto() {
           {enviando ? 'Enviando...' : 'Registrar Ponto'}
         </button>
 
+        {/* 6. ACESSO AO PAINEL (NOVO BOTÃO ADICIONADO AQUI) */}
+        <div className="pt-4 border-t border-gray-100 text-center mt-6">
+          <Link 
+            href="/painel"
+            className="inline-flex items-center justify-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Acesso Restrito: Painel de Gestão
+          </Link>
+        </div>
+
       </div>
+      
     </div>
   );
 }
