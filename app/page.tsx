@@ -26,6 +26,7 @@ export default function RegistroPonto() {
   });
 
   const [enviando, setEnviando] = useState(false);
+  const [linkWhatsappPronto, setLinkWhatsappPronto] = useState<string | null>(null);
 
   // Referências para os inputs de arquivo ocultos
   const inputCameraRef = useRef<HTMLInputElement>(null);
@@ -158,6 +159,45 @@ export default function RegistroPonto() {
       setEnviando(false);
     }
   };
+
+  // SE O LINK ESTIVER PRONTO, MOSTRA A TELA DE SUCESSO
+  if (linkWhatsappPronto) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg text-center space-y-6">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800">Ponto Salvo!</h2>
+          <p className="text-gray-600">
+            Seu registro foi enviado para a planilha com sucesso.
+          </p>
+          
+          {/* BOTÃO DO WHATSAPP (Como é um link real, o iOS nunca bloqueia) */}
+          <a 
+            href={linkWhatsappPronto}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#20b958] text-white p-4 rounded-xl font-bold text-lg shadow-md transition-all active:scale-95"
+          >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.127.554 4.195 1.604 6.009L.452 22.408l4.492-1.178c1.745.952 3.738 1.453 5.787 1.453 6.645 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm0 21.654c-1.802 0-3.568-.484-5.116-1.401l-.367-.217-3.337.876.888-3.256-.238-.378a10.057 10.057 0 01-1.531-5.347c0-5.541 4.512-10.052 10.053-10.052 5.542 0 10.053 4.511 10.053 10.052s-4.511 10.052-10.053 10.052zm5.512-7.535c-.302-.151-1.792-.885-2.068-.987-.277-.101-.478-.151-.68.151-.201.302-.781.987-.957 1.189-.176.201-.353.226-.655.075-2.074-1.036-3.411-2.023-4.698-3.921-.126-.192-.014-.287.132-.435.132-.132.302-.353.453-.529.151-.176.201-.302.302-.504.101-.201.05-.378-.025-.529-.075-.151-.68-1.637-.932-2.242-.244-.585-.494-.504-.68-.514-.176-.01-.378-.01-.58-.01-.201 0-.529.075-.806.378-.277.302-1.058 1.033-1.058 2.519 0 1.486 1.083 2.923 1.234 3.125.151.201 2.128 3.246 5.152 4.548 2.019.869 2.793.937 3.82.781 1.116-.168 2.766-1.129 3.155-2.222.389-1.093.389-2.03.277-2.222-.112-.192-.414-.293-.716-.444z"/>
+            </svg>
+            Avisar no WhatsApp
+          </a>
+
+          <button 
+            onClick={() => setLinkWhatsappPronto(null)}
+            className="mt-6 text-gray-500 font-medium underline hover:text-gray-700 transition-colors"
+          >
+            Voltar para novo registro
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-20 font-sans">
