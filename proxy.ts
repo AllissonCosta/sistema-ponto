@@ -1,19 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// Define que apenas as rotas que começam com /painel precisam de proteção/login
+// Define quais rotas são protegidas
 const isProtectedRoute = createRouteMatcher(['/painel(.*)']);
 
+// Adicionamos o "async" antes de (auth, req)
 export default clerkMiddleware(async (auth, req) => {
-  // Se a rota for protegida (painel), exige autenticação. Caso contrário, libera geral.
   if (isProtectedRoute(req)) {
-    await auth.protect();
+    // Nova sintaxe da versão 6 do Clerk
+    await auth.protect(); 
   }
 });
 
 export const config = {
-  matcher: [
-    // Padrão do Next.js para ignorar arquivos estáticos e internos
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|tff|woff2?|ico|csv|docx?|xlsx?)).*)',
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };

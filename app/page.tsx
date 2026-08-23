@@ -116,7 +116,7 @@ export default function RegistroPonto() {
       };
 
       const acaoTexto = frasesAcao[formData.tipoPonto];
-      const linkGestao = "sistema-ponto-weld.vercel.app/painel";
+      const linkGestao = "https://sistema-ponto-weld.vercel.app/painel";
       const mensagem = `o ${formData.tecnico.toLowerCase()} ${acaoTexto}: ${linkGestao}`;
 
       // Monta o link Universal oficial do WhatsApp
