@@ -135,10 +135,10 @@ export default function RegistroPonto() {
       const linkGestao = "sistema-ponto-weld.vercel.app/painel";
       const mensagem = `o ${formData.tecnico.toLowerCase()} ${acaoTexto}: ${linkGestao}`;
 
-      const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`;
+      const linkWhatsApp = `whatsapp://send?text=${encodeURIComponent(mensagem)}`;
 
       // Abre o WhatsApp
-      window.open(linkWhatsApp, '_self');
+      window.open(linkWhatsApp);
 
       // 6. Limpa o formulário após o envio e restaura a hora atual do sistema
       setFormData({
